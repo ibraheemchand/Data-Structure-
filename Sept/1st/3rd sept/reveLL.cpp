@@ -134,6 +134,43 @@ public:
 
 	}
 
+	void reverseLinkedList(list &l){
+		node* prev = NULL;
+		node* current = l.head ;
+		node* next = NULL;
+
+		
+		bool Loop = true;
+
+		node* tempo;
+		current = l.head;
+		while (Loop)
+		{
+
+		
+			
+			next=current->nextPtr;
+
+
+			if(current->nextPtr !=NULL){
+			tempo=next->nextPtr ; }
+
+			current->nextPtr=prev;
+			
+			prev= current;
+			current = next;
+			next= tempo;
+		
+				if ( current == NULL){
+					Loop= false;
+					l.head = prev;
+				}
+		
+
+			
+		}
+
+	}
 
 
 
@@ -149,7 +186,6 @@ public:
 
 
 
-	
 };
 
 
@@ -174,6 +210,10 @@ l.insertAtBegining(1,"");
 
 
 
+
+l.displayOnlyIntegers(l);
+
+l.reverseLinkedList(l);
 
 l.displayOnlyIntegers(l);
 
