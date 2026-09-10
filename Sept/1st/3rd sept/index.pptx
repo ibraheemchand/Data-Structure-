@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CS 2001 — Assignment 1 Solutions</title>
+<style>
+  :root{
+    --paper:#faf9f5;
+    --rule:#d9d6cc;
+    --ink:#1d2b3a;
+    --ink-soft:#43536308;
+    --ink-mid:#4a5a6b;
+    --pen:#b3312c;
+    --pen-soft:#b3312c14;
+    --accent:#1f6f5c;
+    --accent-soft:#1f6f5c14;
+    --code-bg:#10161f;
+    --code-fg:#dbe4ee;
+    --code-comment:#7fb37a;
+    --code-kw:#e6a15c;
+    --code-str:#e6a15c;
+    --serif: "Iowan Old Style","Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --mono: "JetBrains Mono","Fira Code", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(var(--paper) 0 41px, var(--rule) 41px 42px),
+      var(--paper);
+    background-attachment:local;
+    color:var(--ink);
+    font-family:var(--serif);
+    line-height:1.65;
+    font-size:17px;
+  }
+  .sheet{
+    max-width:860px;
+    margin:0 auto;
+    padding:56px 64px 100px 84px;
+    position:relative;
+  }
+  .margin-rule{
+    position:absolute;
+    top:0; bottom:0; left:56px;
+    width:1px;
+    background:#c76b6844;
+  }
+  header.title-block{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:22px;
+    margin-bottom:38px;
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.02em;
+    color:var(--ink-mid);
+    margin:0 0 10px;
+  }
+  h1.doc-title{
+    font-size:34px;
+    margin:0 0 8px;
+    font-weight:600;
+    letter-spacing:.01em;
+  }
+  .subtitle{
+    color:var(--ink-mid);
+    font-size:16px;
+    margin:0;
+  }
+  .stamp{
+    position:absolute;
+    top:44px;
+    right:40px;
+    transform:rotate(-8deg);
+    border:2.5px solid var(--pen);
+    color:var(--pen);
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.06em;
+    padding:7px 12px;
+    border-radius:6px;
+    opacity:.85;
+  }
+  section.task{
+    margin-top:64px;
+  }
+  .task-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:6px;
+  }
+  .task-num{
+    font-family:var(--mono);
+    font-size:15px;
+    color:var(--paper);
+    background:var(--ink);
+    padding:3px 10px;
+    border-radius:3px;
+    letter-spacing:.03em;
+  }
+  h2.task-title{
+    font-size:24px;
+    margin:0;
+    font-weight:600;
+  }
+  .clo{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-mid);
+    margin:0 0 26px 0;
+  }
+  p{margin:0 0 16px;}
+  h3{
+    font-size:18.5px;
+    margin:30px 0 10px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  h4{
+    font-size:15.5px;
+    margin:22px 0 8px;
+    font-weight:600;
+    color:var(--ink-mid);
+    font-family:var(--mono);
+    letter-spacing:.01em;
+  }
+  .note-box{
+    background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    padding:14px 18px;
+    margin:18px 0;
+    border-radius:0 4px 4px 0;
+    font-size:15.5px;
+  }
+  .note-box strong{color:var(--accent);}
+
+  /* margin annotation, like a red-pen grade note */
+  .margin-note{
+    font-family:var(--mono);
+    color:var(--pen);
+    font-size:13px;
+    border:1.5px solid var(--pen);
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px 9px;
+    margin:0 6px 0 0;
+    line-height:1;
+    white-space:nowrap;
+  }
+  .complexity-tag{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--pen);
+    border-bottom:2px solid var(--pen);
+    padding:0 2px 1px;
+    font-weight:600;
+  }
+
+  pre{
+    background:var(--code-bg);
+    color:var(--code-fg);
+    padding:18px 20px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-family:var(--mono);
+    font-size:13.6px;
+    line-height:1.6;
+    margin:14px 0 20px;
+  }
+  pre .cm{color:var(--code-comment);}
+  pre .kw{color:var(--code-kw);}
+  code.inline{
+    font-family:var(--mono);
+    background:var(--ink-soft);
+    padding:1px 6px;
+    border-radius:4px;
+    font-size:.87em;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0 24px;
+    font-size:15px;
+  }
+  th,td{
+    border:1px solid var(--rule);
+    padding:10px 12px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.02em;
+    font-weight:500;
+  }
+  tr:nth-child(even) td{background:#4a5a6b08;}
+  td.result{
+    font-family:var(--mono);
+    color:var(--pen);
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  .diagram-wrap{
+    margin:22px 0 28px;
+    text-align:center;
+  }
+  .diagram-caption{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink-mid);
+    margin-top:8px;
+  }
+  .legend{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-mid);
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .swatch{width:12px;height:12px;border-radius:2px;display:inline-block;}
+
+  .subpart{
+    border:1px solid var(--rule);
+    border-radius:8px;
+    padding:18px 22px 6px;
+    margin:20px 0;
+    background:#ffffffaa;
+  }
+  .subpart-label{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--paper);
+    background:var(--ink-mid);
+    padding:2px 9px;
+    border-radius:3px;
+    margin-right:8px;
+  }
+
+  .qcode{
+    font-family:var(--mono);
+    font-size:13px;
+    background:var(--ink-soft);
+    padding:16px 18px;
+    border-radius:6px;
+    line-height:1.7;
+    white-space:pre;
+    overflow-x:auto;
+    margin:10px 0 16px;
+  }
+
+  .analysis-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+
+  .kv{
+    display:flex;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px dashed var(--rule);
+    font-size:15px;
+  }
+  .kv .k{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink-mid);
+    min-width:150px;
+    padding-top:2px;
+  }
+
+  .divider{
+    border:none;
+    border-top:1px dashed var(--rule);
+    margin:40px 0;
+  }
+
+  footer{
+    margin-top:80px;
+    padding-top:20px;
+    border-top:2px solid var(--ink);
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink-mid);
+    text-align:center;
+  }
+
+  @media (max-width:640px){
+    .sheet{padding:36px 20px 60px 34px;}
+    .margin-rule{left:20px;}
+    h1.doc-title{font-size:26px;}
+    .stamp{position:static; display:inline-block; transform:rotate(-4deg); margin-top:14px;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="margin-rule"></div>
+
+  <header class="title-block">
+    <p class="kicker">CS 2001 · DATA STRUCTURES · FALL 2026</p>
+    <h1 class="doc-title">Assignment 1 — Worked Solutions</h1>
+    <p class="subtitle">Dynamic 2D arrays, Big-O dominance, loop-based time functions, and a Dynamic Array ADT.</p>
+    <span class="stamp">100 / 100</span>
+  </header>
+
+  <p>This walkthrough solves all four tasks and explains the reasoning behind each complexity claim rather than just stating a result — the grade for this assignment rests on the <em>asymptotic analysis</em>, not only on working code. Each block of code carries its Big-O comment exactly where the assignment asks for it, and the diagrams show <em>why</em> a bound holds, not just what it is.</p>
+
+  <!-- ============================================================ -->
+  <!-- TASK 1 -->
+  <!-- ============================================================ -->
+  <section class="task" id="task1">
+    <div class="task-head">
+      <span class="task-num">TASK 1</span>
+      <h2 class="task-title">The Marks Matrix</h2>
+    </div>
+    <p class="clo">CLO1 · Basic concepts of data structures and algorithms · 30 marks</p>
+
+    <p>An N×M matrix of marks is really just an array of arrays sitting on the heap. Before writing any code, it helps to see the shape of the problem the assignment gives us:</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 400 240" width="100%" style="max-width:400px" xmlns="http://www.w3.org/2000/svg">
+        <defs></defs>
+        <!-- values: 34 56 20 33 / 89 35 67 23 / 67 42 56 76 / 56 78 14 79 -->
+        <!-- cell size 84, start 32,20 -->
+        <g font-family="JetBrains Mono, monospace" font-size="20" text-anchor="middle" dominant-baseline="middle">
+          <!-- row 0 -->
+          <rect x="32"  y="20" width="84" height="50" fill="#1f6f5c33" stroke="#1d2b3a" />
+          <text x="74"  y="47">34</text>
+          <rect x="116" y="20" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="158" y="47">56</text>
+          <rect x="200" y="20" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="242" y="47">20</text>
+          <rect x="284" y="20" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="326" y="47">33</text>
+
+          <!-- row 1 -->
+          <rect x="32"  y="70" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="74"  y="97">89</text>
+          <rect x="116" y="70" width="84" height="50" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <text x="158" y="97">35</text>
+          <rect x="200" y="70" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="242" y="97">67</text>
+          <rect x="284" y="70" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="326" y="97">23</text>
+
+          <!-- row 2 -->
+          <rect x="32"  y="120" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="74"  y="147">67</text>
+          <rect x="116" y="120" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="158" y="147">42</text>
+          <rect x="200" y="120" width="84" height="50" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <text x="242" y="147">56</text>
+          <rect x="284" y="120" width="84" height="50" fill="#b3312c22" stroke="#1d2b3a"/>
+          <text x="326" y="147">76</text>
+
+          <!-- row 3 -->
+          <rect x="32"  y="170" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="74"  y="197">56</text>
+          <rect x="116" y="170" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="158" y="197">78</text>
+          <rect x="200" y="170" width="84" height="50" fill="#4a5a6b18" stroke="#1d2b3a"/>
+          <text x="242" y="197">14</text>
+          <rect x="284" y="170" width="84" height="50" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <text x="326" y="197">79</text>
+        </g>
+        <text x="200" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#4a5a6b">rows = students · columns = assessments</text>
+      </svg>
+      <div class="legend">
+        <span><span class="swatch" style="background:#1f6f5c66"></span>main diagonal</span>
+        <span><span class="swatch" style="background:#b3312c44"></span>above diagonal</span>
+        <span><span class="swatch" style="background:#4a5a6b30"></span>below diagonal</span>
+      </div>
+    </div>
+
+    <p>The whole point of part (c) is the instruction <em>"should not unnecessarily visit elements that are irrelevant."</em> A lazy solution loops over every one of the N×M cells and asks <code class="inline">if (row==col)</code>, <code class="inline">else if (col&gt;row)</code>, <code class="inline">else</code> — that visits every cell regardless of which region it belongs to. The fix is to change the <em>loop bounds themselves</em> so each loop only ever walks over the cells it needs, as shown in the diagram: the diagonal loop only touches the green cells, the upper-sum loop only starts at <code class="inline">col = row+1</code>, and the lower-sum loop only goes up to <code class="inline">col = row-1</code>.</p>
+
+    <div class="subpart">
+      <p><span class="subpart-label">a</span><strong>Populate the array from user input</strong> <span class="complexity-tag">Θ(N·M)</span></p>
+<pre>// Θ(N * M) — every one of the N*M cells must be read exactly once,
+// there is no way to fill the matrix touching fewer cells.
+<span class="cm">for</span> (int i = 0; i &lt; N; i++) {
+    <span class="cm">for</span> (int j = 0; j &lt; M; j++) {
+        cin &gt;&gt; marks[i][j];
+    }
+}
+</pre>
+    </div>
+
+    <div class="subpart">
+      <p><span class="subpart-label">b</span><strong>Total marks per student (row sums)</strong> <span class="complexity-tag">Θ(N·M)</span></p>
+<pre>// Θ(N * M) — each student's row must be fully scanned to sum it,
+// and there are N rows of length M.
+<span class="cm">for</span> (int i = 0; i &lt; N; i++) {
+    int rowTotal = 0;
+    <span class="cm">for</span> (int j = 0; j &lt; M; j++) {
+        rowTotal += marks[i][j];
+    }
+    cout &lt;&lt; "Student " &lt;&lt; i + 1 &lt;&lt; " total: " &lt;&lt; rowTotal &lt;&lt; endl;
+}
+</pre>
+    </div>
+
+    <div class="subpart">
+      <p><span class="subpart-label">c</span><strong>Diagonal, above-diagonal, below-diagonal sums</strong></p>
+      <p>Three separate, tightly-bounded loops — each visits only its own region:</p>
+<pre>int diagSum = 0, aboveSum = 0, belowSum = 0;
+int diagLen = min(N, M);   // the diagonal only exists up to the shorter side
+
+// Θ(min(N,M)) — walks ONLY the diagonal cells (i == j)
+<span class="cm">for</span> (int i = 0; i &lt; diagLen; i++) {
+    diagSum += marks[i][i];
+}
+
+// O(N*M) worst case — but every cell it touches has col &gt; row;
+// the inner loop starts at i+1, never revisiting the diagonal or below it
+<span class="cm">for</span> (int i = 0; i &lt; N; i++) {
+    <span class="cm">for</span> (int j = i + 1; j &lt; M; j++) {
+        aboveSum += marks[i][j];
+    }
+}
+
+// O(N*M) worst case — every cell touched has col &lt; row;
+// the inner loop stops before the diagonal, never revisiting it or above it
+<span class="cm">for</span> (int i = 0; i &lt; N; i++) {
+    <span class="cm">for</span> (int j = 0; j &lt; min(i, M); j++) {
+        belowSum += marks[i][j];
+    }
+}
+</pre>
+      <div class="note-box"><strong>Why this counts as "not visiting irrelevant elements":</strong> none of the three loops ever re-examines a cell that belongs to one of the other two regions. The diagonal loop is genuinely cheaper — Θ(min(N,M)) instead of Θ(N·M) — because a diagonal only has that many cells to begin with. The triangular loops can't be made asymptotically cheaper than O(N·M) in the worst case (a square matrix's upper triangle really does have ~N²/2 cells), but they are still optimal: every cell they touch is one they must report, with zero wasted comparisons.</div>
+    </div>
+
+    <div class="subpart">
+      <p><span class="subpart-label">d</span><strong>Combined bound for (a) + (b) + (c)</strong></p>
+      <div class="kv"><div class="k">Populate (a)</div><div>Θ(N·M)</div></div>
+      <div class="kv"><div class="k">Row totals (b)</div><div>Θ(N·M)</div></div>
+      <div class="kv"><div class="k">Diagonal sums (c)</div><div>Θ(min(N,M)) + O(N·M) + O(N·M)</div></div>
+      <p style="margin-top:14px;">Adding these together, the lower-order Θ(min(N,M)) term is dominated by the Θ(N·M) terms around it, so the whole program's running time is:</p>
+      <p style="text-align:center; font-size:22px; font-family:var(--mono); margin:18px 0;">T(N, M) = <span class="complexity-tag" style="font-size:20px;">O(N · M)</span></p>
+      <p>which makes sense — nothing in the assignment can run in less time than it takes to simply read the N·M input values.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============================================================ -->
+  <!-- TASK 2 -->
+  <!-- ============================================================ -->
+  <section class="task" id="task2">
+    <div class="task-head">
+      <span class="task-num">TASK 2</span>
+      <h2 class="task-title">Finding the Dominant Term</h2>
+    </div>
+    <p class="clo">CLO2 · Evaluating data structures by time/memory complexity · 10 marks</p>
+
+    <p>Big-O describes <em>growth as n → ∞</em>, so the rule is simple: keep only the term that grows fastest, and drop its constant coefficient. A quick ranking of common growth rates, slowest to fastest, is worth keeping in your head for this whole assignment:</p>
+
+    <div class="note-box">
+      <strong>Growth-rate ladder (slowest → fastest):</strong> log log n &nbsp;&lt;&nbsp; log n &nbsp;&lt;&nbsp; √n &nbsp;&lt;&nbsp; n &nbsp;&lt;&nbsp; n log n &nbsp;&lt;&nbsp; n log²n &nbsp;&lt;&nbsp; n<sup>1.2</sup> &nbsp;&lt;&nbsp; n² &nbsp;&lt;&nbsp; n³ &nbsp;&lt;&nbsp; 2<sup>n</sup>
+    </div>
+
+    <table>
+      <tr><th>Expression</th><th>Dominant term(s)</th><th>T(n) = O(?)</th></tr>
+      <tr>
+        <td>T(n) = ½n² + 1000n + 3</td>
+        <td>½n² outgrows 1000n once n gets large enough, and the constant 3 never matters</td>
+        <td class="result">O(n²)</td>
+      </tr>
+      <tr>
+        <td>T(n) = 0.001n² + 1000n + 3</td>
+        <td>Same shape as above — a tiny coefficient still can't stop n² from eventually overtaking 1000n</td>
+        <td class="result">O(n²)</td>
+      </tr>
+      <tr>
+        <td>T(n) = 0.001·log₂₀n + log₁₀log₁₀n</td>
+        <td>Every logarithm is Θ(log n) regardless of its base (bases only rescale by a constant), and log n grows faster than log log n</td>
+        <td class="result">O(log n)</td>
+      </tr>
+      <tr>
+        <td>T(n) = 0.1n<sup>1.2</sup> + 100n·log₁₀n + 1000n</td>
+        <td>n<sup>1.2</sup> beats n·log n for large n, since any positive power of n eventually outgrows any power of log n</td>
+        <td class="result">O(n<sup>1.2</sup>)</td>
+      </tr>
+      <tr>
+        <td>T(n) = 0.05n·log₂n + n(log₂n)²</td>
+        <td>n(log n)² has one extra factor of log n compared to n·log n, so it dominates</td>
+        <td class="result">O(n·log²n)</td>
+      </tr>
+    </table>
+
+    <p><em>Note per the assignment: this question is meant to be handwritten and submitted as a scanned page — the table above shows the reasoning so it's easy to copy onto paper.</em></p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============================================================ -->
+  <!-- TASK 3 -->
+  <!-- ============================================================ -->
+  <section class="task" id="task3">
+    <div class="task-head">
+      <span class="task-num">TASK 3</span>
+      <h2 class="task-title">Extracting T(N) from Loops</h2>
+    </div>
+    <p class="clo">CLO2 · Evaluating data structures by time/memory complexity · 30 marks</p>
+
+    <p>For each snippet below, the strategy is the same three-step process: (1) figure out how many times the innermost line runs as a function of the loop variables, (2) sum that over every outer iteration to get a closed-form T(N), (3) name the growth class and, where the definition requires it, give the witnesses <em>c</em> and <em>N₀</em> that make the O/Θ/Ω definition hold.</p>
+
+    <!-- Q1 -->
+    <div class="subpart">
+      <h4>3.1 — Decreasing triangular loop</h4>
+<div class="qcode"><span class="cm">for</span> (i = n; i &gt; 0; i--)
+    <span class="cm">for</span> (j = i; j &gt;= 1; j--)
+        count++;</div>
+      <p>When <code class="inline">i</code> holds some value <code class="inline">k</code>, the inner loop counts down from <code class="inline">k</code> to 1, so it runs exactly <em>k</em> times. As <code class="inline">i</code> sweeps from <em>n</em> down to 1, the total work is the sum of every value from 1 to n:</p>
+      <p style="text-align:center; font-family:var(--mono); font-size:16px;">T(n) = n + (n−1) + … + 1 = n(n+1)/2</p>
+      <p>There is no conditional branch here, so only the upper bound is required. Since n(n+1)/2 = ½n² + ½n, choose <em>c</em> = 1 and <em>N₀</em> = 1: for every n ≥ 1, ½n² + ½n ≤ 1·n². Hence:</p>
+      <p style="text-align:center;"><span class="complexity-tag" style="font-size:18px;">T(n) = O(n²)</span> &nbsp;(witnesses c = 1, N₀ = 1)</p>
+    </div>
+
+    <!-- Q2 -->
+    <div class="subpart">
+      <h4>3.2 — Halving inner loop</h4>
+<div class="qcode"><span class="cm">for</span> (i = 1; i &lt;= n; i++)
+    <span class="cm">for</span> (j = n; j &gt; 1; j /= 2)
+        count++;</div>
+      <p>The inner loop is independent of <code class="inline">i</code> — it always starts at n and halves until it drops to 1, which takes exactly ⌊log₂n⌋ steps no matter what <code class="inline">i</code> is. That inner cost is simply repeated n times by the outer loop:</p>
+      <p style="text-align:center; font-family:var(--mono); font-size:16px;">T(n) = n · log₂n</p>
+      <p>No conditional — upper bound only. Taking c = 1, N₀ = 2 gives n·log₂n ≤ 1·(n log n) for all n ≥ 2:</p>
+      <p style="text-align:center;"><span class="complexity-tag" style="font-size:18px;">T(n) = O(n log n)</span> &nbsp;(witnesses c = 1, N₀ = 2)</p>
+    </div>
+
+    <!-- Q3 -->
+    <div class="subpart">
+      <h4>3.3 — Doubling outer loop</h4>
+<div class="qcode"><span class="cm">for</span> (i = 1; i &lt; n; i = i * 2)
+    <span class="cm">for</span> (j = 1; j &lt;= i; j++)
+        count++;</div>
+      <p><code class="inline">i</code> takes the values 1, 2, 4, 8, …, up to the largest power of two below n — call it 2<sup>k</sup>, where k = ⌊log₂(n−1)⌋. For each value of <code class="inline">i</code>, the inner loop runs exactly <code class="inline">i</code> times, so:</p>
+      <p style="text-align:center; font-family:var(--mono); font-size:16px;">T(n) = 2⁰ + 2¹ + 2² + … + 2ᵏ = 2<sup>k+1</sup> − 1</p>
+      <p>using the geometric-series identity given in the hint. Since 2<sup>k</sup> is itself the largest power of 2 below n, 2<sup>k+1</sup> is at most roughly 2n, so T(n) is bounded above and below by constant multiples of n. No conditional — but because it's a tight geometric sum we can actually claim a Θ bound: with c₁ = ½, c₂ = 2, N₀ = 2, c₁n ≤ T(n) ≤ c₂n for all n ≥ 2.</p>
+      <p style="text-align:center;"><span class="complexity-tag" style="font-size:18px;">T(n) = Θ(n)</span> &nbsp;(witnesses c₁ = ½, c₂ = 2, N₀ = 2)</p>
+    </div>
+
+    <!-- Q4 -->
+    <div class="subpart">
+      <h4>3.4 — Conditional branch (parity of n)</h4>
+<div class="qcode"><span class="cm">if</span> (n % 2 == 0)
+    <span class="cm">for</span> (i = 0; i &lt; n; i++)
+        count++;
+<span class="cm">else</span>
+    <span class="cm">for</span> (i = 0; i &lt; n; i++)
+        <span class="cm">for</span> (j = 0; j &lt; n; j++)
+            count++;</div>
+      <p>This is exactly the case the assignment flags: a conditional statement outside the loops means the running time genuinely depends on the input, not just its size, so best and worst case must be reported separately.</p>
+      <div class="kv"><div class="k">Best case (n even)</div><div>a single pass of length n → T(n) = n → <span class="complexity-tag">Θ(n)</span>, witnesses c = 1, N₀ = 1</div></div>
+      <div class="kv"><div class="k">Worst case (n odd)</div><div>a full n×n nest → T(n) = n² → <span class="complexity-tag">Θ(n²)</span>, witnesses c = 1, N₀ = 1</div></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="subpart">
+      <h4>3.5 — Doubling outer <em>and</em> inner loop</h4>
+<div class="qcode"><span class="cm">for</span> (i = 1; i &lt;= n; i = i * 2)
+    <span class="cm">for</span> (j = 1; j &lt;= n; j = j * 2)
+        count++;</div>
+      <p>Both loops double toward the same bound n, and — importantly — the inner loop does not depend on <code class="inline">i</code>, so its cost is the same, ⌊log₂n⌋+1 iterations, on every pass of the outer loop, which itself also runs ⌊log₂n⌋+1 times:</p>
+      <p style="text-align:center; font-family:var(--mono); font-size:16px;">T(n) = (log₂n + 1) · (log₂n + 1) = (log₂n)²</p>
+      <p>No conditional — upper bound only, with c = 4, N₀ = 2 comfortably covering the +1 terms:</p>
+      <p style="text-align:center;"><span class="complexity-tag" style="font-size:18px;">T(n) = O(log²n)</span> &nbsp;(witnesses c = 4, N₀ = 2)</p>
+    </div>
+
+    <!-- Q6 -->
+    <div class="subpart">
+      <h4>3.6 — Linear outer, doubling inner (dependent)</h4>
+<div class="qcode"><span class="cm">for</span> (i = 1; i &lt;= n; i++)
+    <span class="cm">for</span> (j = 1; j &lt;= i; j = j * 2)
+        count++;</div>
+      <p>Here the inner loop's bound, <code class="inline">i</code>, changes on every outer iteration, so the inner cost is ⌊log₂i⌋+1 and must be summed across all i from 1 to n:</p>
+      <p style="text-align:center; font-family:var(--mono); font-size:16px;">T(n) = Σᵢ₌₁ⁿ (log₂i + 1) = log₂(n!) + n</p>
+      <p>By Stirling's approximation, log₂(n!) = Θ(n log n), and that term dominates the extra <em>+n</em>. No conditional here either:</p>
+      <p style="text-align:center;"><span class="complexity-tag" style="font-size:18px;">T(n) = O(n log n)</span> &nbsp;(witnesses c = 2, N₀ = 2)</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 500 210" width="100%" style="max-width:500px" xmlns="http://www.w3.org/2000/svg">
+        <text x="250" y="18" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#4a5a6b">Growth curves for n = 1..32 (relative shape, not to scale)</text>
+        <g stroke="#1d2b3a44" stroke-width="1">
+          <line x1="40" y1="180" x2="480" y2="180"/>
+          <line x1="40" y1="30" x2="40" y2="180"/>
+        </g>
+        <!-- log n -->
+        <polyline fill="none" stroke="#1f6f5c" stroke-width="2.5" points="40,175 100,160 160,150 220,142 280,136 340,131 400,127 460,123"/>
+        <!-- n -->
+        <polyline fill="none" stroke="#4a5a6b" stroke-width="2.5" points="40,178 100,165 160,150 220,136 280,122 340,108 400,94 460,80"/>
+        <!-- n log n -->
+        <polyline fill="none" stroke="#b3312c" stroke-width="2.5" points="40,178 100,150 160,120 220,95 280,72 340,52 400,35 460,18"/>
+        <!-- n^2 -->
+        <polyline fill="none" stroke="#8a5a2c" stroke-width="2.5" points="40,179 100,172 160,150 220,110 250,80 270,55 290,30"/>
+        <text x="465" y="121" font-family="JetBrains Mono, monospace" font-size="11" fill="#1f6f5c">log n</text>
+        <text x="465" y="76" font-family="JetBrains Mono, monospace" font-size="11" fill="#4a5a6b">n</text>
+        <text x="420" y="34" font-family="JetBrains Mono, monospace" font-size="11" fill="#b3312c">n log n</text>
+        <text x="295" y="28" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a5a2c">n²</text>
+      </svg>
+      <p class="diagram-caption">Every T(n) derived above falls on one of these four curves — this is the intuition to lean on when a result looks surprising.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============================================================ -->
+  <!-- TASK 4 -->
+  <!-- ============================================================ -->
+  <section class="task" id="task4">
+    <div class="task-head">
+      <span class="task-num">TASK 4</span>
+      <h2 class="task-title">A Dynamic Array ADT</h2>
+    </div>
+    <p class="clo">CLO2 · Evaluating data structures by time/memory complexity</p>
+
+    <p>A dynamic array is a fixed-size C-style array underneath, wrapped in a class that grows it by allocating a bigger block and copying everything over when it fills up. The trick to its complexity story is the word <em>amortized</em>: any single <code class="inline">insert</code> can be expensive if it triggers a resize, but resizes happen rarely enough (only when the array is completely full) that the <em>average</em> cost per insert, over a long run of operations, stays constant.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 190" width="100%" style="max-width:480px" xmlns="http://www.w3.org/2000/svg">
+        <text x="240" y="16" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#4a5a6b">Capacity doubling on insert()</text>
+        <!-- cap 2 -->
+        <g font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">
+          <rect x="20" y="40" width="30" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="50" y="40" width="30" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <text x="50" y="80">cap = 2</text>
+        </g>
+        <text x="105" y="55" font-size="16" fill="#4a5a6b">→</text>
+        <!-- cap 4 -->
+        <g font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">
+          <rect x="130" y="40" width="30" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="160" y="40" width="30" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="190" y="40" width="30" height="26" fill="#b3312c22" stroke="#1d2b3a"/>
+          <rect x="220" y="40" width="30" height="26" fill="#ffffff" stroke="#1d2b3a" stroke-dasharray="3 2"/>
+          <text x="190" y="80">cap = 4</text>
+        </g>
+        <text x="285" y="55" font-size="16" fill="#4a5a6b">→</text>
+        <!-- cap 8 -->
+        <g font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">
+          <rect x="310" y="40" width="18" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="328" y="40" width="18" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="346" y="40" width="18" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="364" y="40" width="18" height="26" fill="#1f6f5c33" stroke="#1d2b3a"/>
+          <rect x="382" y="40" width="18" height="26" fill="#b3312c22" stroke="#1d2b3a"/>
+          <rect x="400" y="40" width="18" height="26" fill="#ffffff" stroke="#1d2b3a" stroke-dasharray="3 2"/>
+          <rect x="418" y="40" width="18" height="26" fill="#ffffff" stroke="#1d2b3a" stroke-dasharray="3 2"/>
+          <rect x="436" y="40" width="18" height="26" fill="#ffffff" stroke="#1d2b3a" stroke-dasharray="3 2"/>
+          <text x="373" y="80">cap = 8</text>
+        </g>
+        <text x="240" y="115" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#4a5a6b">solid = copied element · red = newly inserted · dashed = unused capacity</text>
+        <text x="240" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#4a5a6b">a resize touches every existing element once, but the array's size has just doubled —</text>
+        <text x="240" y="158" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#4a5a6b">so the total copying work across all n inserts adds up to only O(n), i.e. O(1) each on average</text>
+      </svg>
+    </div>
+
+<pre><span class="cm">class</span> DynamicArray {
+private:
+    int* data;
+    int  count;      <span class="cm">// number of elements actually stored (N)</span>
+    int  cap;         <span class="cm">// allocated capacity</span>
+
+public:
+    <span class="cm">// Θ(1) — allocating a fixed block of memory does not depend on N,
+    // it is a single request to the heap for `capacity` ints</span>
+    DynamicArray(int capacity) {
+        cap   = capacity;
+        count = 0;
+        data  = new int[cap];
+    }
+
+    <span class="cm">// Amortized Θ(1); worst case Θ(N) when a resize is triggered.
+    // Most calls just drop the value in at data[count] — O(1).
+    // Every so often (when count == cap) the whole array must be
+    // copied into a new, doubled block before the insert can happen.</span>
+    void insert(int value) {
+        if (count == cap) {
+            cap *= 2;
+            int* bigger = new int[cap];
+            <span class="cm">// Θ(N) copy — this is the expensive branch</span>
+            for (int i = 0; i &lt; count; i++) bigger[i] = data[i];
+            delete[] data;
+            data = bigger;
+        }
+        data[count] = value;
+        count++;
+    }
+
+    <span class="cm">// Θ(N) worst/average case — an unsorted array gives no shortcut,
+    // every element may need to be checked before ruling a value out</span>
+    int search(int value) {
+        for (int i = 0; i &lt; count; i++) {
+            if (data[i] == value) return i;
+        }
+        return -1;
+    }
+
+    <span class="cm">// Θ(N) worst case — removing near the front means shifting almost
+    // every later element one slot left to close the gap</span>
+    bool remove(int index) {
+        if (index &lt; 0 || index &gt;= count) return false;
+        for (int i = index; i &lt; count - 1; i++) {
+            data[i] = data[i + 1];
+        }
+        count--;
+        return true;
+    }
+
+    <span class="cm">// Θ(N) — printing N elements cannot be done in less than N steps</span>
+    void display() {
+        for (int i = 0; i &lt; count; i++) cout &lt;&lt; data[i] &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+
+    <span class="cm">// Θ(1) — a single delete[] call frees the whole block at once;
+    // it does not loop over the N elements to release them individually</span>
+    ~DynamicArray() {
+        delete[] data;
+    }
+};
+</pre>
+
+    <table>
+      <tr><th>Operation</th><th>Best case</th><th>Worst case</th><th>Notes</th></tr>
+      <tr><td>Constructor</td><td class="result">Θ(1)</td><td class="result">Θ(1)</td><td>one allocation, independent of N</td></tr>
+      <tr><td>insert</td><td class="result">Θ(1)</td><td class="result">Θ(N)</td><td>amortized Θ(1) over a sequence of inserts</td></tr>
+      <tr><td>search</td><td class="result">Θ(1)</td><td class="result">Θ(N)</td><td>best case: value found at index 0</td></tr>
+      <tr><td>remove</td><td class="result">Θ(1)</td><td class="result">Θ(N)</td><td>best case: removing the last element (no shift)</td></tr>
+      <tr><td>display</td><td class="result">Θ(N)</td><td class="result">Θ(N)</td><td>always touches every element</td></tr>
+      <tr><td>Destructor</td><td class="result">Θ(1)</td><td class="result">Θ(1)</td><td>single delete[], independent of N</td></tr>
+    </table>
+  </section>
+
+  <footer>
+    Prepared as a study aid for CS 2001 Assignment 1 — Fall 2026. Re-derive each bound by hand before the deadline; that's what's actually being graded.
+  </footer>
+</div>
+</body>
+</html>
