@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "e:/Languages/DataStructures",
-      "program": "e:/Languages/DataStructures/build/Debug/outDebug",
+      "cwd": "c:/Users/ADMIN/Desktop/25M-3067 Lab5",
+      "program": "c:/Users/ADMIN/Desktop/25M-3067 Lab5/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
